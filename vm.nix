@@ -1,6 +1,5 @@
 { config, lib, pkgs, ... }:
 let kernel = ./kernel/arch/x86/boot/bzImage;
-    src = ./.;
     drives = [
       "file=/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_500GB_S5H7NS0NA78631F,format=raw,if=virtio"
       "file=/dev/disk/by-id/ata-WDC_WD2002FAEX-007BA0_WD-WMAY01259996,format=raw,if=virtio"
