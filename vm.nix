@@ -26,6 +26,7 @@ in
   virtualisation = {
     memorySize = 1024 * 8;
     #graphics = true;
+    cores = 6;
     qemu.options = [
       "-kernel" "${kernel}"
     ] ++ drivesOps;
