@@ -1,12 +1,17 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/bbb32fa63aed0a09b32e923471aef8eed93a0096.tar.gz") {}
+}:
 let
-  tools = pkgs.callPackage ./bcachefs-tools { doCheck = false ;};
+
 in
 pkgs.mkShell {
   #name = "linux-kernel-build";
   nativeBuildInputs = with pkgs; [
-  ];
+  ]; # ++ tools.nativeBuildInputs;
+  LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
+  BINDGEN_EXTRA_CLANG_ARGS = "-isystem ${pkgs.llvmPackages.libclang.lib}/lib/clang/${pkgs.lib.getVersion pkgs.clang}/include";
   buildInputs = with pkgs; [
+    shellcheck
+    shfmt
     gist
     getopt
     flex
@@ -15,7 +20,9 @@ pkgs.mkShell {
     gnumake
     gdb
     bc
-    linuxKernel.packages.linux_5_10.perf
+    pkgs.linuxPackages_latest.perf
+    fio
+    #trace-cmd
     pkg-config
     binutils
     python3
@@ -29,10 +36,19 @@ pkgs.mkShell {
     clang-tools
 
     minicom # ktest
+    brotli
     socat
     vde2
-  ];
+
+    cargo
+    llvmPackages.libclang
+    rustPlatform.bindgenHook
+    rust-analyzer
+    libllvm
+    openssl
+    python3
+  ];# ++ tools.buildInputs;
   inputsFrom = [
-    tools
+    pkgs.bcachefs-tools
   ];
 }
